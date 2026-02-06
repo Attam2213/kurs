@@ -12,7 +12,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
   } else {
     console.log('Connected to SQLite database.');
     
-    db.serialize(() => {}
+    initDb();
+  }
 });
 
 const initDb = () => {
