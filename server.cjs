@@ -3,12 +3,26 @@ const cors = require('cors');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 const db = require('./database.cjs');
 
 dotenv.config();
 
 const app = express();
 const PORT = 3000;
+const HOST = '0.0.0.0';
+
+// Check if dist exists
+const distPath = path.join(__dirname, 'dist');
+const indexPath = path.join(distPath, 'index.html');
+
+console.log(`📂 Static files path: ${distPath}`);
+if (fs.existsSync(indexPath)) {
+  console.log('✅ index.html found');
+} else {
+  console.error('❌ index.html NOT found at:', indexPath);
+  console.error('⚠️ Make sure to run "npm run build"');
+}
 
 // Logging Middleware
 app.use((req, res, next) => {
@@ -160,6 +174,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });
