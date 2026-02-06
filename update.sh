@@ -15,7 +15,7 @@ git pull
 
 # 2. Install dependencies
 echo -e "${GREEN}Installing dependencies...${NC}"
-npm install
+npm install --legacy-peer-deps
 
 # 3. Build frontend
 echo -e "${GREEN}Rebuilding frontend...${NC}"

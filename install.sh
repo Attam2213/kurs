@@ -51,7 +51,7 @@ cd $APP_DIR
 
 # Install dependencies
 echo -e "${GREEN}Installing dependencies...${NC}"
-npm install
+npm install --legacy-peer-deps
 
 # Build frontend
 echo -e "${GREEN}Building frontend...${NC}"
