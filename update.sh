@@ -26,6 +26,8 @@ npm run build || { echo -e "${RED}Build failed!${NC}"; exit 1; }
 
 # 4. Restart server
 echo -e "${GREEN}Restarting server...${NC}"
-pm2 restart kursdomoi
+pm2 delete kursdomoi 2>/dev/null || true
+pm2 start server.cjs --name kursdomoi
+pm2 save
 
 echo -e "${GREEN}=== Update Complete! ===${NC}"

@@ -63,7 +63,7 @@ npm run build || { echo -e "${RED}Build failed!${NC}"; exit 1; }
 
 # Setup Admin Credentials
 echo -e "${GREEN}Configuring admin credentials...${NC}"
-node setup-admin.js "$ADMIN_USER" "$ADMIN_PASS"
+node setup-admin.cjs "$ADMIN_USER" "$ADMIN_PASS"
 
 # Install PM2
 echo -e "${GREEN}Installing PM2...${NC}"
@@ -71,7 +71,7 @@ npm install -g pm2
 
 # Start App with PM2
 pm2 delete kursdomoi 2>/dev/null || true
-pm2 start server.js --name kursdomoi
+pm2 start server.cjs --name kursdomoi
 pm2 save
 pm2 startup
 

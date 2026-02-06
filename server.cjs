@@ -1,15 +1,11 @@
-import express from 'express';
-import cors from 'cors';
-import axios from 'axios';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import db from './database.cjs';
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
+const dotenv = require('dotenv');
+const path = require('path');
+const db = require('./database.cjs');
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
