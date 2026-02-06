@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -17,7 +16,7 @@ const PORT = 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 // Serve static files from React build
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -154,7 +153,7 @@ app.post('/api/booking', async (req, res) => {
 });
 
 // Handle SPA routing - return index.html for any non-API request
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
