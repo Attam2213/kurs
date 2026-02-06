@@ -16,11 +16,14 @@ const AdminPanel = () => {
     setMessage('');
     
     try {
+      console.log('🔄 Attempting login...');
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
+
+      console.log(`✅ Login response: ${response.status}`);
 
       const data = await response.json();
 
@@ -28,10 +31,11 @@ const AdminPanel = () => {
         setIsAuthenticated(true);
         fetchAdminSettings();
       } else {
+        console.error('❌ Login failed');
         setMessage('Неверный логин или пароль');
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('🔥 Login error:', error);
       setMessage('Ошибка сервера при входе');
     }
   };

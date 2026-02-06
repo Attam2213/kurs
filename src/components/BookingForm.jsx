@@ -13,6 +13,7 @@ const BookingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('🔄 Submitting booking form:', formData);
     
     try {
       const response = await fetch('/api/booking', {
@@ -23,16 +24,18 @@ const BookingForm = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log(`✅ Booking response status: ${response.status}`);
+
       if (response.ok) {
         setIsSubmitted(true);
         setTimeout(() => setIsSubmitted(false), 3000);
         setFormData({ phone: '', name: '' });
       } else {
-        console.error('Failed to submit form');
-        // Optional: Show error state
+        const errorText = await response.text();
+        console.error('❌ Booking failed:', errorText);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('🔥 Error submitting form:', error);
     }
   };
 

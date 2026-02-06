@@ -20,13 +20,20 @@ export const SettingsProvider = ({ children }) => {
 
   const fetchSettings = async () => {
     try {
+      console.log('🔄 Fetching settings from /api/settings/public...');
       const response = await fetch('/api/settings/public');
+      console.log(`✅ Response status: ${response.status} ${response.statusText}`);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('📦 Settings received:', data);
         setSettings(prev => ({ ...prev, ...data }));
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Settings fetch failed. Status:', response.status, 'Body:', errorText);
       }
     } catch (error) {
-      console.error('Failed to fetch settings:', error);
+      console.error('🔥 Critical error in fetchSettings:', error);
     } finally {
       setLoading(false);
     }
