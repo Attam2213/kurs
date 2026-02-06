@@ -148,8 +148,8 @@ app.post('/api/booking', async (req, res) => {
   }
 });
 
-// Handle SPA routing - return index.html for any non-API request
-app.get(/.*/, (req, res) => {
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
