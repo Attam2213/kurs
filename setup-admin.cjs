@@ -1,19 +1,13 @@
-import { createRequire } from 'module';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const require = createRequire(import.meta.url);
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'database.sqlite');
 
 const username = process.argv[2];
 const password = process.argv[3];
 
 if (!username || !password) {
-  console.log('Usage: node setup-admin.js <username> <password>');
+  console.log('Usage: node setup-admin.cjs <username> <password>');
   process.exit(1);
 }
 

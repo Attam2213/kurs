@@ -4,7 +4,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import db from './database.js';
+import db from './database.cjs';
 
 dotenv.config();
 
