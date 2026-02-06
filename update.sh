@@ -15,11 +15,14 @@ git pull
 
 # 2. Install dependencies
 echo -e "${GREEN}Installing dependencies...${NC}"
-npm install --legacy-peer-deps
+npm install --legacy-peer-deps || { echo -e "${RED}npm install failed!${NC}"; exit 1; }
+
+# Rebuild sqlite3
+npm rebuild sqlite3
 
 # 3. Build frontend
-echo -e "${GREEN}Rebuilding frontend...${NC}"
-npm run build
+echo -e "${GREEN}Building frontend...${NC}"
+npm run build || { echo -e "${RED}Build failed!${NC}"; exit 1; }
 
 # 4. Restart server
 echo -e "${GREEN}Restarting server...${NC}"

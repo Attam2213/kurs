@@ -51,11 +51,15 @@ cd $APP_DIR
 
 # Install dependencies
 echo -e "${GREEN}Installing dependencies...${NC}"
-npm install --legacy-peer-deps
+npm install --legacy-peer-deps || { echo -e "${RED}npm install failed!${NC}"; exit 1; }
+
+# Rebuild sqlite3 for the current architecture
+echo -e "${GREEN}Rebuilding sqlite3...${NC}"
+npm rebuild sqlite3
 
 # Build frontend
 echo -e "${GREEN}Building frontend...${NC}"
-npm run build
+npm run build || { echo -e "${RED}Build failed!${NC}"; exit 1; }
 
 # Setup Admin Credentials
 echo -e "${GREEN}Configuring admin credentials...${NC}"
