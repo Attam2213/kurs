@@ -14,10 +14,17 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Ask for configuration
-read -p "Enter Domain Name (e.g., kurs-domoy.ru): " DOMAIN
+read -p "Enter Domain Name (leave empty to use IP address): " DOMAIN
 read -p "Enter Admin Username: " ADMIN_USER
 read -s -p "Enter Admin Password: " ADMIN_PASS
 echo ""
+
+# Set default directory name if domain is empty
+if [ -z "$DOMAIN" ]; then
+  DIR_NAME="kursdomoi"
+else
+  DIR_NAME="$DOMAIN"
+fi
 
 # Update system
 echo -e "${GREEN}Updating system packages...${NC}"
@@ -33,7 +40,7 @@ echo -e "${GREEN}Installing Nginx and Certbot...${NC}"
 apt install -y nginx certbot python3-certbot-nginx
 
 # Setup App Directory
-APP_DIR="/var/www/$DOMAIN"
+APP_DIR="/var/www/$DIR_NAME"
 mkdir -p $APP_DIR
 
 # Clone/Copy files (Assuming we are running from the repo or just cloned it)
@@ -66,7 +73,27 @@ pm2 startup
 
 # Configure Nginx
 echo -e "${GREEN}Configuring Nginx...${NC}"
-cat > /etc/nginx/sites-available/$DOMAIN <<EOF
+
+if [ -z "$DOMAIN" ]; then
+  # Configuration for IP address (No SSL)
+  cat > /etc/nginx/sites-available/$DIR_NAME <<EOF
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
+    }
+}
+EOF
+else
+  # Configuration for Domain (With SSL placeholder)
+  cat > /etc/nginx/sites-available/$DIR_NAME <<EOF
 server {
     listen 80;
     server_name $DOMAIN www.$DOMAIN;
@@ -81,15 +108,25 @@ server {
     }
 }
 EOF
+fi
 
-ln -s /etc/nginx/sites-available/$DOMAIN /etc/nginx/sites-enabled/ 2>/dev/null
+ln -s /etc/nginx/sites-available/$DIR_NAME /etc/nginx/sites-enabled/ 2>/dev/null
 rm /etc/nginx/sites-enabled/default 2>/dev/null
 nginx -t && systemctl restart nginx
 
-# Setup SSL
-echo -e "${GREEN}Setting up SSL with Certbot...${NC}"
-certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m admin@$DOMAIN --redirect
-
-echo -e "${GREEN}=== Installation Complete! ===${NC}"
-echo -e "Website: https://$DOMAIN"
-echo -e "Admin Panel: https://$DOMAIN/admin"
+# Setup SSL only if Domain is provided
+if [ -n "$DOMAIN" ]; then
+  echo -e "${GREEN}Setting up SSL with Certbot...${NC}"
+  certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m admin@$DOMAIN --redirect
+  
+  echo -e "${GREEN}=== Installation Complete! ===${NC}"
+  echo -e "Website: https://$DOMAIN"
+  echo -e "Admin Panel: https://$DOMAIN/admin"
+else
+  # Get Public IP
+  PUBLIC_IP=$(curl -s ifconfig.me)
+  echo -e "${GREEN}=== Installation Complete! ===${NC}"
+  echo -e "Website: http://$PUBLIC_IP"
+  echo -e "Admin Panel: http://$PUBLIC_IP/admin"
+  echo -e "${RED}Note: SSL is not enabled because no domain was provided.${NC}"
+fi
