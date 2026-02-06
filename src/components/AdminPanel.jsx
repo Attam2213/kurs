@@ -16,7 +16,7 @@ const AdminPanel = () => {
     setMessage('');
     
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -39,7 +39,7 @@ const AdminPanel = () => {
   const fetchAdminSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/settings/admin');
+      const response = await fetch('/api/settings/admin');
       if (response.ok) {
         const data = await response.json();
         setAdminSettings(data);
@@ -61,7 +61,7 @@ const AdminPanel = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/settings', {
+      const response = await fetch('/api/settings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

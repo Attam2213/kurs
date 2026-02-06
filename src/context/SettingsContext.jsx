@@ -20,7 +20,7 @@ export const SettingsProvider = ({ children }) => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/settings/public');
+      const response = await fetch('/api/settings/public');
       if (response.ok) {
         const data = await response.json();
         setSettings(prev => ({ ...prev, ...data }));
