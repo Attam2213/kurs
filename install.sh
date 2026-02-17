@@ -30,7 +30,7 @@ fi
 PUNYCODE_DOMAIN=""
 if [ -n "$DOMAIN" ]; then
   if command -v idn2 >/dev/null 2>&1; then
-    PUNYCODE_DOMAIN=$(idn2 -a "$DOMAIN")
+    PUNYCODE_DOMAIN=$(idn2 "$DOMAIN")
   else
     PUNYCODE_DOMAIN="$DOMAIN"
   fi
