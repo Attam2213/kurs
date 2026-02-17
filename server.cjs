@@ -127,9 +127,21 @@ app.post('/api/settings', (req, res) => {
 });
 
 app.post('/api/booking', async (req, res) => {
-  const { name, phone } = req.body;
+  let { name, phone } = req.body;
 
-  if (!name || !phone) {
+  if (typeof name !== 'string') {
+    name = '';
+  }
+  if (typeof phone !== 'string') {
+    phone = '';
+  }
+
+  name = name.trim();
+  phone = phone.trim();
+
+  const phoneDigits = phone.replace(/\D/g, '');
+
+  if (!name || !phoneDigits) {
     return res.status(400).json({ error: 'Name and phone are required' });
   }
 

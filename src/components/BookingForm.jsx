@@ -10,10 +10,25 @@ const BookingForm = () => {
     name: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('🔄 Submitting booking form:', formData);
+    const name = formData.name.trim();
+    const phone = formData.phone.trim();
+
+    if (!name || !phone) {
+      setError('Пожалуйста, введите имя и телефон');
+      return;
+    }
+
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 7) {
+      setError('Пожалуйста, введите корректный номер телефона');
+      return;
+    }
+
+    console.log('🔄 Submitting booking form:', { name, phone });
     
     try {
       const response = await fetch('/api/booking', {
@@ -21,25 +36,31 @@ const BookingForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name, phone }),
       });
 
       console.log(`✅ Booking response status: ${response.status}`);
 
       if (response.ok) {
+        setError('');
         setIsSubmitted(true);
         setTimeout(() => setIsSubmitted(false), 3000);
         setFormData({ phone: '', name: '' });
       } else {
         const errorText = await response.text();
         console.error('❌ Booking failed:', errorText);
+        setError('Не удалось отправить заявку, попробуйте ещё раз');
       }
     } catch (error) {
       console.error('🔥 Error submitting form:', error);
+      setError('Произошла ошибка, попробуйте ещё раз');
     }
   };
 
   const handleChange = (e) => {
+    if (error) {
+      setError('');
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -98,6 +119,12 @@ const BookingForm = () => {
                   />
                 </div>
               </div>
+
+              {error && (
+                <div className="md:col-span-2 text-red-400 text-sm text-center">
+                  {error}
+                </div>
+              )}
 
               <button 
                 type="submit" 
